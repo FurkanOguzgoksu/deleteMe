@@ -16,6 +16,10 @@ class DeleteMe():
     def deleteMe(self, frame, drawBbox=False):
         if self.bgImage is None:
             raise ValueError("Background image not set. Use loadBackgroundImage() to set it.")
+        if self.bgImage.shape != frame.shape:
+            # camera resolution changed since the background was captured
+            height, width = frame.shape[:2]
+            self.bgImage = cv2.resize(self.bgImage, (width, height))
 
         handClosed = self.handStateClassifier.isHandClosed(frame)
         if handClosed is None:
@@ -30,11 +34,11 @@ class DeleteMe():
         if bbox is None:        #< person not found
             return frame
         
-        if drawBbox == True:
-            frame = self.personDetector.drawBox(frame, bbox)
-
         x, y, w, h = bbox
         frame[y:y+h, x:x+w] = self.bgImage[y:y+h, x:x+w]
+
+        if drawBbox == True:  #< draw after replacing, otherwise the box gets overwritten
+            frame = self.personDetector.drawBox(frame, bbox)
         return frame
 
 if __name__ == "__main__":

@@ -1,2 +1,5 @@
 opencv-python
 mediapipe
+pyvirtualcam
+pillow
+pygrabber; sys_platform == "win32"
