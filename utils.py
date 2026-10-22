@@ -1,9 +1,13 @@
+import os
 from typing import Tuple
 
 import cv2
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+
+# resolve model files next to this script so the app works from any working directory
+projectDir = os.path.dirname(os.path.abspath(__file__))
 
 class KeepState:
     def __init__(self, keepfor, fps=1, initialState=False):
@@ -26,7 +30,7 @@ class KeepState:
 class PersonDetector:
     def __init__(
         self, 
-        modelPath: str = "efficientdet_lite0.tflite", 
+        modelPath: str = os.path.join(projectDir, "efficientdet_lite0.tflite"),
         scoreThreshold: float = 0.5
     ) -> None:
         options = vision.ObjectDetectorOptions(
@@ -68,7 +72,7 @@ class PersonDetector:
 class HandStateClassifier:
     def __init__(
         self, 
-        modelPath: str = "hand_landmarker.task", 
+        modelPath: str = os.path.join(projectDir, "hand_landmarker.task"),
         detectionConfidence: float = 0.5, 
         trackingConfidence: float = 0.5
         
